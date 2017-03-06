@@ -15,12 +15,7 @@ $.get('data/bookmarks.json').done(function(data) {
 		return d3.time.day(d.created);
 	});
 
-
 	var createdMeature = createdDim.group().reduceCount();
-
-	console.log(createdMeature.size());
-	console.log(createdMeature.top(10));
-	console.log(createdDim.bottom(10));
 
 	var createdInHoursDim = facts.dimension(function(d) {
 		return d.created.getHours() + d.created.getMinutes() / 60;
@@ -56,8 +51,6 @@ $.get('data/bookmarks.json').done(function(data) {
 	    .x(d3.scale.linear().domain([0, 24]).rangeRound([0, 10 * 24]))
 	    .xAxis()
 	    ;
-
-	// bookmarksHourChart.colors(['#a65628']);
 
 	dc.renderAll();
 });

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" content="">
+        <title>TWer shapes</title>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap-theme.css" />
+
+        <style type="text/css">
+            .line {
+              fill: none;
+              stroke: #AC145A;
+              stroke-width: 1px;
+            }
+
+            .axis line {
+              stroke: #cccccc;
+            }
+
+            .axis path {
+              fill: none;
+              stroke: #cccccc;
+            }
+
+            .axis + .axis g text {
+              display: none;
+            }
+
+            .tick {
+              display: none;
+            }
+
+            .shape {
+              fill: none;
+              stroke: #AC145A;
+              stroke-width: 1px;
+            }
+
+            .shape-baseline {
+              fill: none;
+              stroke: #AC145A;
+              stroke-width: 1px;
+              opacity: .2;
+            }
+        </style>
+
+
+    </head>
+    <body>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3" id="twer-1"></div>
+                <div class="col-lg-3" id="twer-2"></div>
+                <div class="col-lg-3" id="twer-3"></div>
+                <div class="col-lg-3" id="twer-4"></div>
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.7.0/lodash.min.js"></script>
+        <script type="text/javascript">
+
+        window.onload = function() {
+            var width = 960,
+                height = 500;
+
+            var outerRadius = 50,
+                innerRadius = 120;  
+
+            var ratingScale = 10;
+
+            var svg = d3.select("body").append("svg")
+                .attr("width", width)
+                .attr("height", height)
+              .append("g")
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+
+            var angle = d3.scale.linear()
+                .range([0, 2 * Math.PI]);
+
+            var radius = d3.scale.linear()
+                .range([0, outerRadius]);
+
+            d3.json('data/jigsaw.skills.for.14323.json', function(err, data) {
+                var grouped = _.groupBy(data.skills, 'group.name');
+                var categories = _.keys(grouped);
+
+                angle.domain([0, categories.length]);
+                radius.domain([0, -outerRadius]);
+
+                var lineRadial = d3.svg.line.radial()
+                    .radius(function(d){
+                        return d;
+                    }).angle(function(d,i){
+                        return angle(i);
+                    });
+
+                var series = _.map(_.values(grouped), function(v) {
+                    return _.meanBy(v, function(x) {
+                        return x.rating
+                        })
+                    });
+
+                var series = _.concat(series, _.head(series));
+
+                svg.selectAll('.shape')
+                    .data([_.map(series, function(x) {return x * ratingScale})])
+                    .enter()
+                    .append('path')
+                    .attr('class', 'shape')
+                    .attr('d',function(d){
+                        return lineRadial(d);
+                    });
+
+                svg.selectAll('.shape-baseline')
+                    .data([_.fill(Array(series.length), outerRadius)])
+                    .enter()
+                    .append('path')
+                    .attr('class', 'shape-baseline')
+                    .attr('d',function(d){
+                        return lineRadial(d);
+                    });
+
+              svg.selectAll(".axis")
+                  .data(d3.range(categories.length))
+                .enter().append("g")
+                  .attr("class", "axis")
+                  .attr("stroke-dasharray", ("2,2"))
+                  .attr("transform", function(d) { 
+                    return "rotate(" + angle(d) * 180 / Math.PI + ")"; 
+                  })
+                .call(d3.svg.axis()
+                  .scale(radius.copy().range([0, -outerRadius]))
+                  .orient("left")
+                  .outerTickSize(0));
+            })
+        }
+            
+        </script>
+    </body>
+</html>
