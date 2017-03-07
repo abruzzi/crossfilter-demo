@@ -13,7 +13,8 @@ function shapeChart() {
   var radius = d3.scale.linear()
       .range([0, outerRadius]);
 
-  var title = 'title';
+  var title = '';
+  var legend = false;
 
   function chart(selection) {
     selection.each(function(series) {
@@ -26,7 +27,7 @@ function shapeChart() {
         .attr("height", height);
 
       var g = svg.select("g")
-          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+          .attr("transform", "translate(" + (width / 2 -10) + "," + (height / 2 -10) + ")");
 
       angle.domain([0, series.length-1]);
       radius.domain([0, -outerRadius]);
@@ -60,6 +61,7 @@ function shapeChart() {
               return lineRadial(d);
           });
 
+
       g.selectAll('.shape-baseline')
           .data([_.fill(Array(series.length), outerRadius)])
           .enter()
@@ -69,8 +71,6 @@ function shapeChart() {
               return lineRadial(d);
           });
 
-
-
       svg.selectAll(".title")
         .data([title])
         .enter().append("text")
@@ -79,6 +79,30 @@ function shapeChart() {
           .attr("y", (height-20))
           .attr("text-anchor", "middle")
           .text(function(d) {return  d});
+
+      if(legend) {
+        var ga = svg.append("g")
+            .attr("class", "a axis")
+            .attr("transform", "translate(" + (width / 2 -10) + "," + (height / 2 -10) + ")")
+          .selectAll("g")
+            .data(d3.range(0, 360, 360/(series.length-1)))
+          .enter().append("g")
+            .attr("transform", function(d) { return "rotate(" + -d * 180 / Math.PI + ")"; });
+        
+        var rd = Math.min(width, height) / 2 - 70;
+
+        var categories = ["Technical", "Testing", "Consulting", "Domain", "BA & XD", "Mgmt & Planning", "Language"];
+
+        ga.append("text")
+            .attr("class", "legend-text")
+            .attr("x", rd)
+            .attr("dy", ".30em")
+            .style("text-anchor", function(d) { return d < 270 && d > 90 ? "end" : null; })
+            .attr("transform", function(d) { return d < 270 && d > 90 ? "rotate(180 " + (rd) + ",0)" : null; })
+            .text(function(d, i) { return categories[i]; });
+      }
+
+
     });
   }
 
@@ -107,5 +131,10 @@ function shapeChart() {
     return chart;
   };
 
+  chart.legend = function(_) {
+    if (!arguments.length) return legend;
+    legend = _;
+    return chart;    
+  }
   return chart;
 }

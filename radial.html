@@ -8,6 +8,18 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap-theme.css" />
 
         <style type="text/css">
+            body, input, textarea, select, button {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            body {
+                font-family: "Pingfang SC", "Helvetica Neue", "Microsoft Yahei", Helvetica, Arial, "Hiragino Sans GB", "Microsoft Sans Serif", "WenQuanYi Micro Hei", sans;
+                -webkit-font-smoothing: antialiased;
+                background: #F6F6F6;
+            }
+
+
             .line {
               fill: none;
               stroke: #AC145A;
@@ -47,12 +59,36 @@
             .title {
                 fill: #333333;
             }
+
+            .source {
+                padding: 20px 0;
+                color: #cccccc;
+                font-size: 12px;
+            }
+
+            .page-title {
+                padding: 20px 0;
+                text-align: center;
+                /*text-decoration: underline;*/
+                color: #333333;
+                font-weight: normal;
+            }
+
+            .legend-text {
+                font-size: 10px;
+            }
         </style>
 
     </head>
     <body>
 
         <div class="container">
+            <div class="row">
+                <div class="col-lg-12 center">
+                    <h2 class="page-title">Shapes of ThoughtWorkers</h2>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-3" id="twer-1"></div>
                 <div class="col-lg-3 col-md-3 col-sm-3" id="twer-2"></div>
@@ -65,6 +101,30 @@
                 <div class="col-lg-3 col-md-3 col-sm-3" id="twer-6"></div>
                 <div class="col-lg-3 col-md-3 col-sm-3" id="twer-7"></div>
                 <div class="col-lg-3 col-md-3 col-sm-3" id="twer-8"></div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-9"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-10"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-11"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-12"></div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-13"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-14"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-15"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-16"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 pull-right source">Source: ThoughtWorks Jigsaw 2017 March</div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-3 pull-right" id="legend"></div>
             </div>
         </div>
 
@@ -81,7 +141,7 @@
             var categories = ["Technical", "Testing", "Consulting", "Domain", "BA & XD", "Management & Planning", "Language"];
 
             d3.json("data/name-mapping.json", function(mapping) {
-                var ids = ["15356", "12399", "17608", "15812", "15683", "13710", "13970", "13906"];
+                var ids = ["15356", "12399", "17608", "15812", "15683", "13710", "13970", "13906", "16206", "14542", "11658", "14408", "14601", "16050", "14545", "18446"];
 
                 _.each(ids, function(value, index) {
                     d3.json("data/jigsaw.skills.for." + value + ".json", function(err, data) {
@@ -100,12 +160,17 @@
 
                         var name = _.find(mapping, function(x) {return x.id === value})['name'];
 
-                        chart.width(180).height(180).title(name);
+                        chart.width(180).height(180).legend(false).title(name);
                         d3.select("#twer-"+(index+1))
                           .datum(series)
                           .call(chart);
                     });    
                 });
+                
+                chart.width(200).height(200).legend(true).title();
+                d3.select("#legend")
+                    .datum([5,5,5,5,5,5,5,5])
+                    .call(chart);
             });
             
         }
