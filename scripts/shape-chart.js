@@ -38,6 +38,19 @@ function shapeChart() {
               return angle(i);
           });
 
+      g.selectAll(".axis")
+          .data(d3.range(series.length-1))
+        .enter().append("g")
+          .attr("class", "axis")
+          .attr("stroke-dasharray", ("2,2"))
+          .attr("transform", function(d) { 
+            return "rotate(" + angle(d) * 180 / Math.PI + ")"; 
+          })
+        .call(d3.svg.axis()
+          .scale(radius.copy().range([0, -outerRadius]))
+          .orient("left")
+          .outerTickSize(0));
+
       g.selectAll('.shape')
           .data([_.map(series, function(x) {return x * ratingScale})])
           .enter()
@@ -56,18 +69,7 @@ function shapeChart() {
               return lineRadial(d);
           });
 
-      g.selectAll(".axis")
-          .data(d3.range(series.length-1))
-        .enter().append("g")
-          .attr("class", "axis")
-          .attr("stroke-dasharray", ("2,2"))
-          .attr("transform", function(d) { 
-            return "rotate(" + angle(d) * 180 / Math.PI + ")"; 
-          })
-        .call(d3.svg.axis()
-          .scale(radius.copy().range([0, -outerRadius]))
-          .orient("left")
-          .outerTickSize(0));
+
 
       svg.selectAll(".title")
         .data([title])

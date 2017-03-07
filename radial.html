@@ -20,7 +20,7 @@
 
             .axis path {
               fill: none;
-              stroke: #cccccc;
+              stroke: #dddddd;
             }
 
             .axis + .axis g text {
@@ -41,10 +41,13 @@
               fill: none;
               stroke: #AC145A;
               stroke-width: 1px;
-              opacity: .2;
+              opacity: .1;
+            }
+
+            .title {
+                fill: #333333;
             }
         </style>
-
 
     </head>
     <body>
@@ -67,6 +70,7 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.7.0/lodash.min.js"></script>
+        <script src="https://d3js.org/d3-queue.v3.min.js"></script>
         <script src="scripts/shape-chart.js"></script>
 
         <script type="text/javascript">
@@ -76,28 +80,34 @@
             var chart = shapeChart();
             var categories = ["Technical", "Testing", "Consulting", "Domain", "BA & XD", "Management & Planning", "Language"];
 
-            _.each(["15356", "12399", "17608", "15812", "15683", "14256", "13970", "13906"], function(value, index) {
-                d3.json("data/jigsaw.skills.for." + value + ".json", function(err, data) {
-                    var grouped = _.groupBy(data.skills, 'group.name');
+            d3.json("data/name-mapping.json", function(mapping) {
+                var ids = ["15356", "12399", "17608", "15812", "15683", "13710", "13970", "13906"];
 
-                    var  series = _.map(categories, function(category) {
-                        var items = grouped[category];
-                        if(items) {
-                            return _.meanBy(items, function(x) {return x.rating;});              
-                        } else {
-                            return 0;
-                        }
-                    });
+                _.each(ids, function(value, index) {
+                    d3.json("data/jigsaw.skills.for." + value + ".json", function(err, data) {
+                        var grouped = _.groupBy(data.skills, 'group.name');
 
-                    var series = _.concat(series, _.head(series));
+                        var  series = _.map(categories, function(category) {
+                            var items = grouped[category];
+                            if(items) {
+                                return _.meanBy(items, function(x) {return x.rating;});              
+                            } else {
+                                return 0;
+                            }
+                        });
 
-                    chart.title(value);
-                    d3.select("#twer-"+(index+1))
-                      .datum(series)
-                      .call(chart);
-                });    
+                        var series = _.concat(series, _.head(series));
+
+                        var name = _.find(mapping, function(x) {return x.id === value})['name'];
+
+                        chart.width(180).height(180).title(name);
+                        d3.select("#twer-"+(index+1))
+                          .datum(series)
+                          .call(chart);
+                    });    
+                });
             });
-
+            
         }
         </script>
     </body>
