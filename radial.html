@@ -51,17 +51,17 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-lg-3" id="twer-1"></div>
-                <div class="col-lg-3" id="twer-2"></div>
-                <div class="col-lg-3" id="twer-3"></div>
-                <div class="col-lg-3" id="twer-4"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-1"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-2"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-3"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-4"></div>
             </div>
 
             <div class="row">
-                <div class="col-lg-3" id="twer-5"></div>
-                <div class="col-lg-3" id="twer-6"></div>
-                <div class="col-lg-3" id="twer-7"></div>
-                <div class="col-lg-3" id="twer-8"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-5"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-6"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-7"></div>
+                <div class="col-lg-3 col-md-3 col-sm-3" id="twer-8"></div>
             </div>
         </div>
 
@@ -75,50 +75,17 @@
 
             var chart = shapeChart();
 
-            // ["14323", "12399", "17608"]
-            d3.json('data/jigsaw.skills.for.14323.json', function(err, data) {
-                var grouped = _.groupBy(data.skills, 'group.name');
+            _.each(["15356", "12399", "17608", "15812", "15683", "14256", "13970", "13906"], function(value, index) {
+                d3.json("data/jigsaw.skills.for." + value + ".json", function(err, data) {
+                    var grouped = _.groupBy(data.skills, 'group.name');
 
-                d3.select("#twer-1")
-                  .datum(grouped)
-                  .call(chart);
+                    chart.title(value);
+                    d3.select("#twer-"+(index+1))
+                      .datum(grouped)
+                      .call(chart);
+                });    
             });
 
-
-            d3.json('data/jigsaw.skills.for.12399.json', function(err, data) {
-                var grouped = _.groupBy(data.skills, 'group.name');
-
-                d3.select("#twer-2")
-                  .datum(grouped)
-                  .call(chart);
-            });
-
-
-            d3.json('data/jigsaw.skills.for.17608.json', function(err, data) {
-                var grouped = _.groupBy(data.skills, 'group.name');
-
-                d3.select("#twer-3")
-                  .datum(grouped)
-                  .call(chart);
-            });
-
-            d3.json('data/jigsaw.skills.for.15812.json', function(err, data) {
-                var grouped = _.groupBy(data.skills, 'group.name');
-
-                d3.select("#twer-4")
-                  .datum(grouped)
-                  .call(chart);
-            });
-
-
-            d3.json('data/jigsaw.skills.for.14007.json', function(err, data) {
-                var grouped = _.groupBy(data.skills, 'group.name');
-                console.log(grouped);
-
-                d3.select("#twer-5")
-                  .datum(grouped)
-                  .call(chart);
-            });
         }
         </script>
     </body>

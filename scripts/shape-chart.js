@@ -13,18 +13,18 @@ function shapeChart() {
   var radius = d3.scale.linear()
       .range([0, outerRadius]);
 
+  var title = 'title';
+
   function chart(selection) {
     selection.each(function(data) {
       var svg = d3.select(this).selectAll("svg").data([data]);
 
       var gEnter = svg.enter().append("svg").append("g");
 
-      // Update the outer dimensions.
       svg
         .attr("width", width)
         .attr("height", height);
 
-      // Update the inner dimensions.
       var g = svg.select("g")
           .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
@@ -43,7 +43,7 @@ function shapeChart() {
 
       var series = _.map(_.values(grouped), function(v) {
           return _.meanBy(v, function(x) {
-              return x.rating
+              return x.rating;
               })
           });
 
@@ -80,12 +80,27 @@ function shapeChart() {
           .orient("left")
           .outerTickSize(0));
 
+      svg.selectAll(".title")
+        .data([title])
+        .enter().append("text")
+          .attr("class", "title")
+          .attr("x", (width/2))
+          .attr("y", (height-20))
+          .attr("text-anchor", "middle")
+          .text(function(d) {return  d});
     });
   }
 
   chart.margin = function(_) {
     if (!arguments.length) return margin;
     margin = _;
+    return chart;
+  };
+
+
+  chart.title = function(_) {
+    if (!arguments.length) return title;
+    title = _;
     return chart;
   };
 
