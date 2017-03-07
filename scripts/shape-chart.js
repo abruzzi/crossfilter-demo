@@ -16,8 +16,8 @@ function shapeChart() {
   var title = 'title';
 
   function chart(selection) {
-    selection.each(function(data) {
-      var svg = d3.select(this).selectAll("svg").data([data]);
+    selection.each(function(series) {
+      var svg = d3.select(this).selectAll("svg").data([series]);
 
       var gEnter = svg.enter().append("svg").append("g");
 
@@ -28,10 +28,7 @@ function shapeChart() {
       var g = svg.select("g")
           .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-      var grouped = data;
-      var categories = _.keys(grouped);
-
-      angle.domain([0, categories.length]);
+      angle.domain([0, series.length-1]);
       radius.domain([0, -outerRadius]);
 
       var lineRadial = d3.svg.line.radial()
@@ -40,14 +37,6 @@ function shapeChart() {
           }).angle(function(d,i){
               return angle(i);
           });
-
-      var series = _.map(_.values(grouped), function(v) {
-          return _.meanBy(v, function(x) {
-              return x.rating;
-              })
-          });
-
-      var series = _.concat(series, _.head(series));
 
       g.selectAll('.shape')
           .data([_.map(series, function(x) {return x * ratingScale})])
@@ -68,7 +57,7 @@ function shapeChart() {
           });
 
       g.selectAll(".axis")
-          .data(d3.range(categories.length))
+          .data(d3.range(series.length-1))
         .enter().append("g")
           .attr("class", "axis")
           .attr("stroke-dasharray", ("2,2"))

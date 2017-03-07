@@ -74,14 +74,26 @@
         window.onload = function() {
 
             var chart = shapeChart();
+            var categories = ["Technical", "Testing", "Consulting", "Domain", "BA & XD", "Management & Planning", "Language"];
 
             _.each(["15356", "12399", "17608", "15812", "15683", "14256", "13970", "13906"], function(value, index) {
                 d3.json("data/jigsaw.skills.for." + value + ".json", function(err, data) {
                     var grouped = _.groupBy(data.skills, 'group.name');
 
+                    var  series = _.map(categories, function(category) {
+                        var items = grouped[category];
+                        if(items) {
+                            return _.meanBy(items, function(x) {return x.rating;});              
+                        } else {
+                            return 0;
+                        }
+                    });
+
+                    var series = _.concat(series, _.head(series));
+
                     chart.title(value);
                     d3.select("#twer-"+(index+1))
-                      .datum(grouped)
+                      .datum(series)
                       .call(chart);
                 });    
             });
