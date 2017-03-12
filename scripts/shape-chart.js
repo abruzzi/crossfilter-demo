@@ -35,7 +35,17 @@ function shapeChart() {
       var lineRadial = d3.svg.line.radial()
           .radius(function(d){
               return d;
-          }).angle(function(d,i){
+          })
+          .angle(function(d,i){
+              return angle(i);
+          })
+          .interpolate('cardinal');
+
+      var ploygonRadial = d3.svg.line.radial()
+          .radius(function(d){
+              return d;
+          })
+          .angle(function(d,i){
               return angle(i);
           });
 
@@ -68,7 +78,7 @@ function shapeChart() {
           .append('path')
           .attr('class', 'shape-baseline')
           .attr('d',function(d){
-              return lineRadial(d);
+              return ploygonRadial(d);
           });
 
       svg.selectAll(".title")
@@ -78,7 +88,7 @@ function shapeChart() {
           .attr("x", (width/2))
           .attr("y", (height-20))
           .attr("text-anchor", "middle")
-          .text(function(d) {return  d});
+          .text(function(d) {return d});
 
       if(legend) {
         var ga = svg.append("g")
@@ -87,18 +97,18 @@ function shapeChart() {
           .selectAll("g")
             .data(d3.range(0, 360, 360/(series.length-1)))
           .enter().append("g")
-            .attr("transform", function(d) { return "rotate(" + -d * 180 / Math.PI + ")"; });
+            .attr("transform", function(d) { return "rotate(" + (d -90) + ")"; });
         
         var rd = Math.min(width, height) / 2 - 70;
 
-        var categories = ["Technical", "Testing", "Consulting", "Domain", "BA & XD", "Mgmt & Planning", "Language"];
+        var categories = ["Technical", "Testing", "Consulting", "Domain", "BA & XD", "Mgmt & Plan", "Language"];
 
         ga.append("text")
             .attr("class", "legend-text")
             .attr("x", rd)
             .attr("dy", ".30em")
-            .style("text-anchor", function(d) { return d < 270 && d > 90 ? "end" : null; })
-            .attr("transform", function(d) { return d < 270 && d > 90 ? "rotate(180 " + (rd) + ",0)" : null; })
+            .style("text-anchor", function(d) { return d < 360 && d > 180 ? "end" : null; })
+            .attr("transform", function(d) { return d < 360 && d > 180 ? "rotate(180 " + (rd) + ",0)" : null; })
             .text(function(d, i) { return categories[i]; });
       }
 

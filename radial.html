@@ -14,9 +14,10 @@
             }
 
             body {
-                font-family: "Pingfang SC", "Helvetica Neue", "Microsoft Yahei", Helvetica, Arial, "Hiragino Sans GB", "Microsoft Sans Serif", "WenQuanYi Micro Hei", sans;
+                font-family: "Seravek", "Pingfang SC", "Helvetica Neue", "Microsoft Yahei", Helvetica, Arial, "Hiragino Sans GB", "Microsoft Sans Serif", "WenQuanYi Micro Hei", sans;
                 -webkit-font-smoothing: antialiased;
-                background: #F6F6F6;
+                font-weight: light;
+                background: #333333;
             }
 
 
@@ -32,7 +33,7 @@
 
             .axis path {
               fill: none;
-              stroke: #dddddd;
+              stroke: #444444;
             }
 
             .axis + .axis g text {
@@ -45,37 +46,37 @@
 
             .shape {
               fill: none;
-              stroke: #AC145A;
+              stroke: #1ee1fa;
               stroke-width: 1px;
             }
 
             .shape-baseline {
               fill: none;
-              stroke: #AC145A;
+              stroke: #1ee1fa;
               stroke-width: 1px;
               opacity: .1;
             }
 
             .title {
-                fill: #333333;
+                fill: #e2e2e2;
             }
 
             .source {
                 padding: 20px 0;
-                color: #cccccc;
+                color: #666666;
                 font-size: 12px;
             }
 
             .page-title {
                 padding: 20px 0;
                 text-align: center;
-                /*text-decoration: underline;*/
-                color: #333333;
+                color: #e2e2e2;
                 font-weight: normal;
             }
 
             .legend-text {
                 font-size: 10px;
+                fill: #e2e2e2;
             }
         </style>
 
@@ -168,8 +169,10 @@
                 });
                 
                 chart.width(200).height(200).legend(true).title();
+                var full = [5,5,5,5,5,5,5,5];
+                // var empty = [0,0,0,0,0,0,0,0];
                 d3.select("#legend")
-                    .datum([5,5,5,5,5,5,5,5])
+                    .datum(full)
                     .call(chart);
             });
             
