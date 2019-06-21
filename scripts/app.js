@@ -30,7 +30,7 @@ $.get('data/bookmarks.json').done(function(data) {
 	var bookmarksDayChart = dc.barChart("#bookmarks-day-chart");
 	var bookmarksHourChart = dc.barChart("#bookmarks-hour-chart");
 
-	bookmarksDayChart.width(960)
+	bookmarksDayChart.width(1000)
 	    .height(200)
 	    .margins({top: 10, right: 10, bottom: 20, left: 40})
 	    .dimension(createdDim)
