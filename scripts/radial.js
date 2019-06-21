@@ -1,9 +1,9 @@
-window.onload = function () {
-  var chart = shapeChart();
-  var categories = ["Technical", "Testing", "Consulting", "Domain", "BA & XD", "Management & Planning", "Language"];
+const categories = ["Technical", "Testing", "Consulting", "Domain", "BA & XD", "Management & Planning", "Language"];
+const chart = shapeChart();
 
-  d3.json("data/twoz.json", function (twoz) {
-    const ids = twoz.map(x => x.employeeId)
+window.onload = () => {
+  d3.json("data/twoz.json", (twoz) => {
+    const ids = _.take(twoz, 20).map(x => x.employeeId);
     const charts = d3.select('#charts')
       .selectAll('div.shape-chart')
       .data(ids);
@@ -17,35 +17,32 @@ window.onload = function () {
     const twers = _.filter(twoz, twer => ids.includes(twer.employeeId));
 
     twers.forEach(twer => {
-      var grouped = _.groupBy(twer.skills, 'group.name');
+      const grouped = _.groupBy(twer.skills, 'group.name');
 
-      var skills = _.map(categories, function (category) {
-        var items = grouped[category];
+      const skills = _.map(categories, (category) => {
+        const items = grouped[category];
 
         if (items) {
-          return _.meanBy(items, function (x) {
-            return x.rating;
-          });
+          return _.meanBy(items, x => x.rating);
         } else {
           return 0;
         }
       });
 
-      var series = _.concat(skills, _.head(skills));
+      const series = _.concat(skills, _.head(skills));
 
       chart.width(180).height(180).legend(false).title(twer.name);
 
-      d3.select("#twer-" + (twer.employeeId))
+      d3.select(`#twer-${twer.employeeId}`)
         .datum(series)
         .call(chart);
     });
 
     chart.width(200).height(200).legend(true).title('');
-    var full = [5, 5, 5, 5, 5, 5, 5, 5];
+    const full = [5, 5, 5, 5, 5, 5, 5, 5];
 
     d3.select("#legend")
       .datum(full)
       .call(chart);
   });
-
 }
