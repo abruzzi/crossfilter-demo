@@ -12,7 +12,7 @@ const chart = shapeChart(categories);
 
 window.onload = () => {
   d3.json("data/twoz.json", (twoz) => {
-    const ids = _.take(twoz, 1).map(x => x.employeeId);
+    const ids = _.take(twoz, 3).map(x => x.employeeId);
     const charts = d3.select('#charts')
       .selectAll('div.shape-chart')
       .data(ids);

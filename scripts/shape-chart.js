@@ -27,6 +27,15 @@ function shapeChart(categories) {
         .attr("height", height)
         .attr("transform", "translate(" + (width / 2 - 10) + "," + (height / 2 - 10) + ")");
 
+      graph.selectAll(".title")
+        .data([title])
+        .enter().append("text")
+        .attr("class", "title")
+        .attr("x", (0))
+        .attr("y", (height / 2 - 20))
+        .attr("text-anchor", "middle")
+        .text(d => d);
+
       angle.domain([0, series.length - 1]);
       radius.domain([0, -outerRadius]);
 
@@ -86,7 +95,6 @@ function shapeChart(categories) {
           .attr("x", rd)
           .attr("dy", ".30em")
           .style("text-anchor", function (d) {
-            console.log(d)
             return d < 360 && d > 180 ? "end" : null;
           })
           .attr("transform", function (d) {
