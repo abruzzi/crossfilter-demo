@@ -1,4 +1,4 @@
-function shapeChart() {
+function shapeChart(categories) {
   var width = 200,
     height = 200;
 
@@ -7,49 +7,39 @@ function shapeChart() {
 
   var ratingScale = 10;
 
-  var angle = d3.scale.linear()
+  var angle = d3.scaleLinear()
     .range([0, 2 * Math.PI]);
 
-  var radius = d3.scale.linear()
+  var radius = d3.scaleLinear()
     .range([0, outerRadius]);
 
-  var title = '';
+  var title = 'xxxxxxxxxxxxxxxxxxx';
   var legend = false;
+
 
   function chart(selection) {
     selection.each(function (series) {
-      var svg = d3.select(this).selectAll("svg").data([series]);
+      const svg = d3.select(this).selectAll("svg").data([series]);
 
-      var gEnter = svg.enter().append("svg").append("g");
-
-      svg
+      const graph = svg.enter().append("svg").append("g")
+        .merge(svg)
         .attr("width", width)
-        .attr("height", height);
-
-      var g = svg.select("g")
+        .attr("height", height)
         .attr("transform", "translate(" + (width / 2 - 10) + "," + (height / 2 - 10) + ")");
 
       angle.domain([0, series.length - 1]);
       radius.domain([0, -outerRadius]);
 
-      var lineRadial = d3.svg.line.radial()
-        .radius(function (d) {
-          return d;
-        })
-        .angle(function (d, i) {
-          return angle(i);
-        })
-        .interpolate('cardinal');
+      var lineRadial = d3.radialLine()
+        .radius(x => x)
+        .angle((d, i) => angle(i))
+        .curve(d3.curveCardinal);
 
-      var ploygonRadial = d3.svg.line.radial()
-        .radius(function (d) {
-          return d;
-        })
-        .angle(function (d, i) {
-          return angle(i);
-        });
+      var ploygonRadial = d3.radialLine()
+        .radius(x => x)
+        .angle((d, i) => angle(i));
 
-      g.selectAll(".axis")
+      graph.selectAll(".axis")
         .data(d3.range(series.length - 1))
         .enter().append("g")
         .attr("class", "axis")
@@ -57,74 +47,53 @@ function shapeChart() {
         .attr("transform", function (d) {
           return "rotate(" + angle(d) * 180 / Math.PI + ")";
         })
-        .call(d3.svg.axis()
-          .scale(radius.copy().range([0, -outerRadius]))
-          .orient("left")
-          .outerTickSize(0));
+        .call(d3.axisLeft(radius.copy().range([0, -outerRadius]))
+          .tickSizeOuter(0));
 
-      g.selectAll('.shape')
+      graph.selectAll('.shape')
         .data([_.map(series, function (x) {
           return x * ratingScale
         })])
         .enter()
         .append('path')
         .attr('class', 'shape')
-        .attr('d', function (d) {
-          return lineRadial(d);
-        });
+        .attr('d', d => lineRadial(d));
 
-
-      g.selectAll('.shape-baseline')
+      graph.selectAll('.shape-baseline')
         .data([_.fill(Array(series.length), outerRadius)])
         .enter()
         .append('path')
         .attr('class', 'shape-baseline')
-        .attr('d', function (d) {
-          return ploygonRadial(d);
-        });
-
-      svg.selectAll(".title")
-        .data([title])
-        .enter().append("text")
-        .attr("class", "title")
-        .attr("x", (width / 2))
-        .attr("y", (height - 20))
-        .attr("text-anchor", "middle")
-        .text(function (d) {
-          return d
-        });
+        .attr('d', d => ploygonRadial(d));
 
       if (legend) {
-        var ga = svg.append("g")
+        const ga = graph.append("g")
           .attr("class", "a axis")
           .attr("transform", "translate(" + (width / 2 - 10) + "," + (height / 2 - 10) + ")")
           .selectAll("g")
-          .data(d3.range(0, 360, 360 / (series.length - 1)))
-          .enter().append("g")
+          .data(d3.range(0, 360, 360 / (series.length - 1)));
+
+          ga.enter().append("g")
           .attr("transform", function (d) {
             return "rotate(" + (d - 90) + ")";
           });
 
-        var rd = Math.min(width, height) / 2 - 70;
-
-        var categories = ["Technical", "Testing", "Consulting", "Domain", "BA & XD", "Mgmt & Plan", "Language"];
+        const rd = Math.min(width, height) / 2 - 70;
 
         ga.append("text")
+          .merge(ga)
           .attr("class", "legend-text")
           .attr("x", rd)
           .attr("dy", ".30em")
           .style("text-anchor", function (d) {
+            console.log(d)
             return d < 360 && d > 180 ? "end" : null;
           })
           .attr("transform", function (d) {
             return d < 360 && d > 180 ? "rotate(180 " + (rd) + ",0)" : null;
           })
-          .text(function (d, i) {
-            return categories[i];
-          });
+          .text((d, i) => categories[i]);
       }
-
-
     });
   }
 
@@ -133,7 +102,6 @@ function shapeChart() {
     margin = _;
     return chart;
   };
-
 
   chart.title = function (_) {
     if (!arguments.length) return title;
@@ -158,5 +126,6 @@ function shapeChart() {
     legend = _;
     return chart;
   }
+
   return chart;
 }

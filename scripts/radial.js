@@ -1,9 +1,18 @@
-const categories = ["Technical", "Testing", "Consulting", "Domain", "BA & XD", "Management & Planning", "Language"];
-const chart = shapeChart();
+const categories = [
+  "Technical",
+  "Testing",
+  "Consulting",
+  "Domain",
+  "BA & XD",
+  "Management & Planning",
+  "Language"
+];
+
+const chart = shapeChart(categories);
 
 window.onload = () => {
   d3.json("data/twoz.json", (twoz) => {
-    const ids = _.take(twoz, 20).map(x => x.employeeId);
+    const ids = _.take(twoz, 1).map(x => x.employeeId);
     const charts = d3.select('#charts')
       .selectAll('div.shape-chart')
       .data(ids);
@@ -12,6 +21,7 @@ window.onload = () => {
       .enter()
       .append('div')
       .attr('class', 'col-lg-2 col-md-2 col-sm-2 shape-chart')
+      .merge(charts)
       .attr('id', x => `twer-${x}`);
 
     const twers = _.filter(twoz, twer => ids.includes(twer.employeeId));
@@ -45,4 +55,4 @@ window.onload = () => {
       .datum(full)
       .call(chart);
   });
-}
+};
