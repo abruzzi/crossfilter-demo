@@ -1,0 +1,75 @@
+body, input, textarea, select, button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: "Seravek", "Pingfang SC", "Helvetica Neue", "Microsoft Yahei", Helvetica, Arial, "Hiragino Sans GB", "Microsoft Sans Serif", "WenQuanYi Micro Hei", sans;
+  -webkit-font-smoothing: antialiased;
+  font-weight: lighter;
+  background: #333333;
+}
+
+.line {
+  fill: none;
+  stroke: #AC145A;
+  stroke-width: 1px;
+}
+
+.axis line {
+  stroke: #cccccc;
+}
+
+.axis path {
+  fill: none;
+  stroke: #444444;
+}
+
+.axis + .axis g text {
+  display: none;
+}
+
+.tick {
+  display: none;
+}
+
+.shape {
+  fill: none;
+  stroke: #1ee1fa;
+  stroke-width: 1px;
+}
+
+.shape-baseline {
+  fill: none;
+  stroke: #1ee1fa;
+  stroke-width: 1px;
+  opacity: .1;
+}
+
+.title {
+  fill: #e2e2e2;
+}
+
+.source {
+  padding: 20px 0;
+  color: #666666;
+  font-size: 12px;
+}
+
+.page-title {
+  padding: 120px 0;
+  text-align: center;
+  color: #e2e2e2;
+  font-weight: normal;
+  font-size: 48px;
+  margin: 0;
+}
+
+.legend-text {
+  font-size: 10px;
+  fill: #e2e2e2;
+}
+
+.shape-chart {
+  text-align: center;
+}

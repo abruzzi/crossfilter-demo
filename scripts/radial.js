@@ -12,21 +12,19 @@ const chart = shapeChart(categories);
 
 window.onload = () => {
   d3.json("data/twoz.json", (twoz) => {
-    const ids = twoz.map(x => x.employeeId);
-    const charts = d3.select('#charts')
+    const ids = _.take(twoz, 24).map(x => x.employeeId);
+    d3.select('#charts')
       .selectAll('div.shape-chart')
-      .data(ids);
-
-    charts
+      .data(ids)
       .enter()
       .append('div')
       .attr('class', 'col-lg-2 col-md-2 col-sm-2 shape-chart')
-      .merge(charts)
       .attr('id', x => `twer-${x}`);
 
     const twers = _.filter(twoz, twer => ids.includes(twer.employeeId));
 
     twers.forEach(twer => {
+      console.log(twer);
       const grouped = _.groupBy(twer.skills, 'group.name');
 
       const skills = _.map(categories, (category) => {
@@ -40,6 +38,7 @@ window.onload = () => {
       });
 
       const series = _.concat(skills, _.head(skills));
+      console.log(series)
 
       chart.width(180).height(180).legend(false).title(twer.name);
 
