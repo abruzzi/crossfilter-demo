@@ -2,8 +2,7 @@ function shapeChart(categories) {
   var width = 200,
     height = 200;
 
-  var outerRadius = 50,
-    innerRadius = 120;
+  var outerRadius = 50;
 
   var ratingScale = 10;
 
@@ -13,16 +12,16 @@ function shapeChart(categories) {
   var radius = d3.scaleLinear()
     .range([0, outerRadius]);
 
-  var title = 'xxxxxxxxxxxxxxxxxxx';
+  var title = '';
   var legend = false;
-
 
   function chart(selection) {
     selection.each(function (series) {
       const svg = d3.select(this).selectAll("svg").data([series]);
 
-      const graph = svg.enter().append("svg").append("g")
+      const graph = svg.enter().append("svg")
         .merge(svg)
+        .append("g")
         .attr("width", width)
         .attr("height", height)
         .attr("transform", "translate(" + (width / 2 - 10) + "," + (height / 2 - 10) + ")");
@@ -32,19 +31,19 @@ function shapeChart(categories) {
         .enter().append("text")
         .attr("class", "title")
         .attr("x", (0))
-        .attr("y", (height / 2 - 20))
+        .attr("y", (height / 2 - 24))
         .attr("text-anchor", "middle")
         .text(d => d);
 
       angle.domain([0, series.length - 1]);
       radius.domain([0, -outerRadius]);
 
-      var lineRadial = d3.radialLine()
+      const lineRadial = d3.radialLine()
         .radius(x => x)
         .angle((d, i) => angle(i))
         .curve(d3.curveCardinal);
 
-      var ploygonRadial = d3.radialLine()
+      const ploygonRadial = d3.radialLine()
         .radius(x => x)
         .angle((d, i) => angle(i));
 
@@ -77,28 +76,26 @@ function shapeChart(categories) {
 
       if (legend) {
         const ga = graph.append("g")
+          .merge(graph)
           .attr("class", "a axis")
-          .attr("transform", "translate(" + (width / 2 - 10) + "," + (height / 2 - 10) + ")")
+          .attr("transform", "translate(" + (0) + "," + (0) + ")")
           .selectAll("g")
-          .data(d3.range(0, 360, 360 / (series.length - 1)));
-
-          ga.enter().append("g")
+          .data(d3.range(0, 360, 360 / (series.length - 1)))
+          .enter().append("g")
           .attr("transform", function (d) {
             return "rotate(" + (d - 90) + ")";
           });
 
-        const rd = Math.min(width, height) / 2 - 70;
-
         ga.append("text")
           .merge(ga)
           .attr("class", "legend-text")
-          .attr("x", rd)
+          .attr("x", Math.min(width, height) / 2 - 70)
           .attr("dy", ".30em")
           .style("text-anchor", function (d) {
             return d < 360 && d > 180 ? "end" : null;
           })
           .attr("transform", function (d) {
-            return d < 360 && d > 180 ? "rotate(180 " + (rd) + ",0)" : null;
+            return d < 360 && d > 180 ? "rotate(180 " + ((Math.min(width, height) / 2 - 70)) + ",0)" : null;
           })
           .text((d, i) => categories[i]);
       }
